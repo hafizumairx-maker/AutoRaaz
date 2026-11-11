@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoRaaz - Pakistan's #1 Automobile Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo" onclick="showHome()">
+       <div class="logo-main">Auto<span>Raaz</span><small><small>.com</small></small></div>
+        <div class="logo-sub">PAKISTAN'S #1 AUTOMOBILE WEBSITE</div>
+    </div>
+    <nav>
+        <div class="nav-item">
+            <a href="#">Used Cars ▾</a>
+            <div class="dropdown">
+                <div class="dropdown-grid">
+                    <div class="dropdown-col">
+                        <h4>Find Used Cars</h4>
+                        <a onclick="showHome(); document.getElementById('searchInput').focus();">Find Used Cars for Sale</a>
+                        <a onclick="showFeaturedCars()">Featured Used Cars</a>
+                        <a onclick="handlePostAd()">Sell Your Car</a>
+                        <a onclick="showToast('Dealers section coming soon','info')">Used Car Dealers</a>
+                    </div>
+                    <div class="dropdown-col">
+                        <h4>Services</h4>
+                        <a onclick="showToast('Certified Cars service','info')">Certified Cars</a>
+                        <a onclick="showToast('Car Inspection service','info')">Car Inspection</a>
+                        <a onclick="showToast('Sell It For Me service','info')">Sell It For Me</a>
+                        <a onclick="showToast('Auction Sheet Verification','info')">Auction Sheet</a>
+                    </div>
+                    <div class="dropdown-col">
+                        <h4>Popular Cities</h4>
+                        <a onclick="filterByCity('Karachi')">Karachi</a>
+                        <a onclick="filterByCity('Lahore')">Lahore</a>
+                        <a onclick="filterByCity('Islamabad')">Islamabad</a>
+                        <a onclick="filterByCity('Rawalpindi')">Rawalpindi</a>
+                    </div>
+                    <div class="dropdown-col">
+                        <h4>Popular Models</h4>
+                        <a onclick="filterByModel('Corolla')">Toyota Corolla</a>
+                        <a onclick="filterByModel('Civic')">Honda Civic</a>
+                        <a onclick="filterByModel('Cultus')">Suzuki Cultus</a>
+                        <a onclick="filterByModel('City')">Honda City</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav-item"><a href="#" onclick="showNewCars(); return false;">New Cars ▾</a></div>
+        <div class="nav-item"><a href="#" onclick="showBikes(); return false;">Bikes ▾</a></div>
+        <div class="nav-item"><a href="#" onclick="showAutoStore(); return false;">Auto Store ▾</a></div>
+        <div class="nav-item"><a href="#" onclick="showVideos(); return false;">Videos</a></div>
+        <div class="nav-item"><a href="#" onclick="showBlog(); return false;">Blog</a></div>
+    </nav>
+    <div class="header-right">
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+        <button class="auth-btn" id="loginBtn" onclick="openAuthModal('login')">Login</button>
+        <div class="user-info" id="userInfo">
+            <span class="user-name" id="headerUserName" onclick="showAccount()">User</span>
+            <button class="logout-btn" onclick="logoutUser()">Logout</button>
+        </div>
+        <a class="post-ad" onclick="handlePostAd()">Post an Ad</a>
+        <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
+    </div>
+</header>
+
+<!-- Mobile Menu -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobileMenu">
+    <button class="close-btn" onclick="closeMobileMenu()">×</button>
+    <a href="#" onclick="showHome(); closeMobileMenu();">Home</a>
+    <a href="#" onclick="showNewCars(); closeMobileMenu();">New Cars</a>
+    <a href="#" onclick="showBikes(); closeMobileMenu();">Bikes</a>
+    <a href="#" onclick="showAutoStore(); closeMobileMenu();">Auto Store</a>
+    <a href="#" onclick="showVideos(); closeMobileMenu();">Videos</a>
+    <a href="#" onclick="showBlog(); closeMobileMenu();">Blog</a>
+    <a href="#" onclick="showFavorites(); closeMobileMenu();">Favorites</a>
+    <a href="#" onclick="showAccount(); closeMobileMenu();">My Account</a>
+    <a href="#" onclick="handlePostAd(); closeMobileMenu();">Post an Ad</a>
+    <a href="#" id="mobileLoginLink" onclick="openAuthModal('login'); closeMobileMenu();">Login / Register</a>
+    <a href="#" id="mobileLogoutLink" style="display:none;" onclick="logoutUser(); closeMobileMenu();">Logout</a>
+</div>
+
+<!-- Auth Modal -->
+<div class="auth-modal" id="authModal">
+    <div class="auth-box">
+        <button class="auth-close" onclick="closeAuthModal()">×</button>
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
+            <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
+        </div>
+        <div class="auth-content">
+            <div class="auth-form active" id="loginForm">
+                <h3>Welcome Back</h3>
+                <p>Login to your AutoRaaz account</p>
+                <div class="auth-error" id="loginError"></div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="autoraaz@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <button class="auth-submit" onclick="loginUser()">Login</button>
+            </div>
+            <div class="auth-form" id="registerForm">
+                <h3>Create Account</h3>
+                <p>Join AutoRaaz, Pakistan's #1 automobile marketplace</p>
+                <div class="auth-error" id="registerError"></div>
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="Hafiz Umair" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" placeholder="autoraaz@gmail.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <div class="phone-wrapper">
+                        <select id="countryCode">
+                                        <option value="+92" data-length="10">🇵🇰 +92</option>
+                                        <option value="+1" data-length="10">🇺🇸 +1</option>
+                                        <option value="+44" data-length="10">🇬🇧 +44</option>
+                                        <option value="+91" data-length="10">🇮🇳 +91</option>
+                                        <option value="+971" data-length="9">🇦🇪 +971</option>
+                                        <option value="+966" data-length="9">🇸🇦 +966</option>
+                                    </select>
+
+                <input type="tel" id="regPhone" placeholder="3001234567" inputmode="numeric" autocomplete="tel">
+            </div>
+        </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" placeholder="Min 8 characters" autocomplete="new-password">
+                </div>
+                <button class="auth-submit" onclick="registerUser()">Create Account</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HOME VIEW -->
+<div id="homeView">
+    <section class="hero">
+        <h2>Find Used Cars in Pakistan</h2>
+        <p>With thousands of cars, we have just the right one for you</p>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Car Make or Model" onkeyup="applyFilters()">
+            <select id="cityFilter" onchange="applyFilters()">
+                <option value="">All Cities</option>
+                <option value="Karachi">Karachi</option>
+                <option value="Lahore">Lahore</option>
+                <option value="Islamabad">Islamabad</option>
+                <option value="Rawalpindi">Rawalpindi</option>
+                <option value="Faisalabad">Faisalabad</option>
+            </select>
+            <select id="priceFilter" onchange="applyFilters()">
+                <option value="">Price Range</option>
+                <option value="30">Under 30 Lakh</option>
+                <option value="50">Under 50 Lakh</option>
+                <option value="80">Under 80 Lakh</option>
+                <option value="100">Under 100 Lakh</option>
+            </select>
+            <button onclick="applyFilters()">Search</button>
+        </div>
+        <div class="advanced-filters">
+            <select id="fuelFilter" onchange="applyFilters()">
+                <option value="">All Fuel</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="CNG">CNG</option>
+            </select>
+            <select id="transFilter" onchange="applyFilters()">
+                <option value="">All Transmission</option>
+                <option value="Automatic">Automatic</option>
+                <option value="Manual">Manual</option>
+            </select>
+            <select id="yearFilter" onchange="applyFilters()">
+                <option value="">Any Year</option>
+                <option value="2023">2023+</option>
+                <option value="2021">2021+</option>
+                <option value="2019">2019+</option>
+                <option value="2015">2015+</option>
+            </select>
+            <select id="sortFilter" onchange="applyFilters()">
+                <option value="">Sort By</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="year-desc">Year: Newest</option>
+                <option value="year-asc">Year: Oldest</option>
+            </select>
+        </div>
+    </section>
+
+    <section class="section" id="recentSection" style="display:none;">
+        <h3>Recently Viewed</h3>
+        <div class="cars-grid" id="recentContainer"></div>
+    </section>
+
+    <section class="section">
+        <h3>Featured Used Cars</h3>
+        <div class="cars-grid" id="carsContainer"></div>
+        <div class="no-results" id="noResults">No cars found matching your search.</div>
+        <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+            <button class="load-more-btn" onclick="loadMore()">Load More</button>
+        </div>
+    </section>
+
+    <section class="section">
+        <h3>Why Choose AutoRaaz</h3>
+        <div class="why-grid">
+            <div class="why-card"><div class="why-icon">🛡️</div><h4>Trusted Platform</h4><p>Pakistan's most trusted automobile marketplace.</p></div>
+            <div class="why-card"><div class="why-icon">🔍</div><h4>Car Inspection</h4><p>Professional inspection reports.</p></div>
+            <div class="why-card"><div class="why-icon">💰</div><h4>Best Prices</h4><p>Thousands of listings for best value.</p></div>
+            <div class="why-card"><div class="why-icon">📱</div><h4>Easy Selling</h4><p>Post your ad in minutes.</p></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h3>What Our Users Say</h3>
+        <div class="testimonials-grid">
+            <div class="testimonial-card"><div class="stars">★★★★★</div><p>"Sold my Civic within 4 days. Highly recommended!"</p><div class="testimonial-author">— Ali Raza, Lahore</div></div>
+            <div class="testimonial-card"><div class="stars">★★★★★</div><p>"Bought a Corolla after proper inspection."</p><div class="testimonial-author">— Sara Ahmed, Karachi</div></div>
+            <div class="testimonial-card"><div class="stars">★★★★☆</div><p>"Best platform for used cars in Pakistan."</p><div class="testimonial-author">— Usman Khan, Islamabad</div></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h3>AutoRaaz Offerings</h3>
+        <div class="offerings-grid">
+            <div class="offering-card">
+                <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?w=200&h=140&fit=crop" class="offering-img" alt="">
+                <div class="offering-text"><h4>AutoRaaz</h4><p>SELL IT FOR ME</p></div>
+            </div>
+            <div class="offering-card">
+                <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=200&h=140&fit=crop" class="offering-img" alt="">
+                <div class="offering-text"><h4>AutoRaaz</h4><p>AUCTION SHEET VERIFICATION</p></div>
+            </div>
+            <div class="offering-card">
+                <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=200&h=140&fit=crop" class="offering-img" alt="">
+                <div class="offering-text"><h4>AutoRaaz</h4><p>CAR INSPECTION</p></div>
+            </div>
+            <div class="offering-card">
+                <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=200&h=140&fit=crop" class="offering-img" alt="">
+                <div class="offering-text"><h4>AutoRaaz</h4><p>SERVICE CENTER</p></div>
+            </div>
+            <div class="offering-card">
+                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=200&h=140&fit=crop" class="offering-img" alt="">
+                <div class="offering-text"><h4>AutoRaaz</h4><p>CAR INSURANCE</p></div>
+            </div>
+            <div class="offering-card">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=200&h=140&fit=crop" class="offering-img" alt="">
+                <div class="offering-text"><h4>AutoRaaz</h4><p>CAR FINANCE</p></div>
+            </div>
+            <div class="offering-card">
+                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=140&fit=crop" class="offering-img" alt="">
+                <div class="offering-text"><h4>AutoRaaz</h4><p>CAR REGISTRATION</p></div>
+            </div>
+            <div class="offering-card">
+                <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=200&h=140&fit=crop" class="offering-img" alt="">
+                <div class="offering-text"><h4>AutoRaaz</h4><p>OWNERSHIP TRANSFER</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Cars by Make with Logos -->
+    <section class="section">
+        <h3>New Cars by Make</h3>
+        <div class="brands-grid">
+            <div class="brand-item"><div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Suzuki_logo_2025_%28vertical%29.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="Suzuki" onerror="this.parentElement.innerHTML='Suzuki'"></div><span>Suzuki</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://global.toyota/pages/global_toyota/mobility/toyota-brand/emblem_001.jpg" alt="Toyota" onerror="this.parentElement.innerHTML='Toyota'"></div><span>Toyota</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://car-brand-names.com/wp-content/uploads/2015/05/Honda-Logo.png" alt="Honda" onerror="this.parentElement.innerHTML='Honda'"></div><span>Honda</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://images.seeklogo.com/logo-png/61/1/kia-logo-png_seeklogo-614437.png" alt="KIA" onerror="this.parentElement.innerHTML='KIA'"></div><span>KIA</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://images.seeklogo.com/logo-png/23/1/hyundai-logo-png_seeklogo-237568.png" alt="Hyundai" onerror="this.parentElement.innerHTML='Hyundai'"></div><span>Hyundai</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://images.seeklogo.com/logo-png/21/1/changan-automotive-logo-png_seeklogo-214050.png" alt="Changan" onerror="this.parentElement.innerHTML='Changan'"></div><span>Changan</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c8/MG_Motor_2021_logo.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="MG" onerror="this.parentElement.innerHTML='MG'"></div><span>MG</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://logos-world.net/wp-content/uploads/2021/09/BYD-Logo.png" alt="BYD" onerror="this.parentElement.innerHTML='BYD'"></div><span>BYD</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="BMW" onerror="this.parentElement.innerHTML='BMW'"></div><span>BMW</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://thumbs.dreamstime.com/b/logo-audi-car-color-vector-format-aviable-ai-logo-audi-124368762.jpg?w=768" alt="Audi" onerror="this.parentElement.innerHTML='Audi'"></div><span>Audi</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://1000logos.net/wp-content/uploads/2018/04/Mercedes-Benz-Logo.png" alt="Mercedes" onerror="this.parentElement.innerHTML='Mercedes'"></div><span>Mercedes</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://startuppakistan.com.pk/wp-content/uploads/2022/03/regal-logo.png.webp" alt="Prince" onerror="this.parentElement.innerHTML='Prince'"></div><span>Prince</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://www.car-brand-names.com/wp-content/uploads/2020/07/Isuzu-Logo.png" alt="Isuzu" onerror="this.parentElement.innerHTML='Isuzu'"></div><span>Isuzu</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://images.seeklogo.com/logo-png/31/1/haval-logo-png_seeklogo-316169.png" alt="Haval" onerror="this.parentElement.innerHTML='Haval'"></div><span>Haval</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://logos-world.net/wp-content/uploads/2021/10/Peugeot-Logo.png" alt="Peugeot" onerror="this.parentElement.innerHTML='Peugeot'"></div><span>Peugeot</span></div>
+            <div class="brand-item"><div class="brand-logo"><img src="https://images.seeklogo.com/logo-png/51/1/jac-logo-png_seeklogo-519859.png" alt="JAC" onerror="this.parentElement.innerHTML='JAC'"></div><span>JAC</span></div>
+        </div>
+    </section>
+
+        <section class="section">
+        <h3>Browse Used Cars</h3>
+        <div class="browse-grid">
+            <div class="browse-card"><div class="icon">🏎️</div><p>Sports cars</p></div>
+            <div class="browse-card"><div class="icon">⚡</div><p>Electric cars</p></div>
+            <div class="browse-card"><div class="icon">🚘</div><p>Luxury Cars</p></div>
+            <div class="browse-card"><div class="icon">🇯🇵</div><p>Japanese cars</p></div>
+            <div class="browse-card"><div class="icon">⚙️</div><p>Automatic</p></div>
+            <div class="browse-card"><div class="icon">🕰️</div><p>Old Cars</p></div>
+            <div class="browse-card"><div class="icon">🔋</div><p>Hybrid</p></div>
+            <div class="browse-card"><div class="icon">🚐</div><p>Carry Daba</p></div>
+            <div class="browse-card"><div class="icon">👨‍👩‍👧‍👦</div><p>7 Seater</p></div>
+            <div class="browse-card"><div class="icon">💥</div><p>Accidental</p></div>
+            <div class="browse-card"><div class="icon">🔧</div><p>Modified</p></div>
+            <div class="browse-card"><div class="icon">🚗</div><p>Small cars</p></div>
+        </div>
+    </section>
+</div>
+
+<!-- VIDEOS VIEW -->
+<div class="videos-view" id="videosView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <div class="page-hero">
+        <h2>AutoRaaz Videos</h2>
+        <p>Car reviews, comparisons and latest automobile news</p>
+    </div>
+    <div class="content-grid" id="videosContainer"></div>
+</div>
+
+<!-- BLOG VIEW -->
+<div class="blog-view" id="blogView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <div class="page-hero">
+        <h2>AutoRaaz Blog</h2>
+        <p>Latest articles, buying guides and car maintenance tips</p>
+    </div>
+    <div class="content-grid" id="blogContainer"></div>
+</div>
+
+<!-- NEW CARS, BIKES, AUTO STORE, DETAIL, SELL, ACCOUNT, FAVORITES, COMPARE views -->
+<!-- (These are kept exactly as in your previous working version) -->
+
+<div class="newcars-view" id="newCarsView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <div class="page-hero"><h2>New Cars in Pakistan</h2><p>Latest models with official prices</p></div>
+    <div class="cars-grid" id="newCarsContainer"></div>
+</div>
+
+<div class="bikes-view" id="bikesView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <div class="page-hero"><h2>Bikes in Pakistan</h2><p>Find the perfect bike</p></div>
+    <div class="cars-grid" id="bikesContainer"></div>
+</div>
+
+<div class="autostore-view" id="autoStoreView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <div class="page-hero"><h2>Auto Store</h2><p>Parts, accessories, tyres & more</p></div>
+    <div class="cars-grid" id="autoStoreContainer"></div>
+</div>
+
+<div class="detail-view" id="detailView">
+    <button class="back-btn" onclick="showHome()">← Back to Listings</button>
+    <div class="detail-grid">
+        <div>
+            <img id="detailImage" class="gallery-main" src="" alt="Car" onclick="window.open(this.src,'_blank')">
+            <div class="gallery-thumbs" id="galleryThumbs"></div>
+        </div>
+        <div class="detail-info">
+            <h1 id="detailTitle"></h1>
+            <div class="detail-price" id="detailPrice"></div>
+            <div class="detail-specs" id="detailSpecs"></div>
+            <p class="detail-desc" id="detailDesc"></p>
+            <button class="contact-seller" onclick="showToast('Seller contact: 03XX-XXXXXXX','info')">Contact Seller</button>
+            <div class="share-buttons">
+                <button class="share-btn whatsapp" onclick="shareOnWhatsApp()">WhatsApp Share</button>
+                <button class="share-btn facebook" onclick="shareOnFacebook()">Facebook Share</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="sell-view" id="sellView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <div class="sell-form">
+        <h2 id="sellFormTitle">Sell Your Car on AutoRaaz</h2>
+        <form onsubmit="submitSellForm(event)">
+            <input type="hidden" id="editAdId" value="">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Make *</label>
+                    <select required id="sellMake">
+                        <option value="">Select Make</option>
+                        <option>Toyota</option><option>Honda</option><option>Suzuki</option>
+                        <option>Kia</option><option>Hyundai</option><option>Changan</option>
+                        <option>MG</option><option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Model *</label>
+                    <input type="text" id="sellModel" placeholder="e.g. Corolla GLi" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Year *</label>
+                    <input type="number" id="sellYear" min="1990" max="2026" required>
+                </div>
+                <div class="form-group">
+                    <label>Price (Lakh) *</label>
+                    <input type="number" id="sellPrice" step="0.1" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City *</label>
+                    <select required id="sellCity">
+                        <option value="">Select City</option>
+                        <option>Karachi</option><option>Lahore</option><option>Islamabad</option>
+                        <option>Rawalpindi</option><option>Faisalabad</option><option>Multan</option>
+                        <option>Peshawar</option><option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mileage (km) *</label>
+                    <input type="number" id="sellMileage" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fuel Type</label>
+                    <select id="sellFuel">
+                        <option>Petrol</option><option>Diesel</option><option>Hybrid</option>
+                        <option>Electric</option><option>CNG</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Transmission</label>
+                    <select id="sellTrans">
+                        <option>Automatic</option><option>Manual</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="sellDesc" placeholder="Condition, extras..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Your Phone Number *</label>
+                <input type="tel" id="sellPhone" required>
+            </div>
+            <button type="submit" class="submit-btn" id="sellSubmitBtn">Post Your Ad</button>
+        </form>
+    </div>
+</div>
+
+<div class="account-view" id="accountView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <div class="account-card">
+        <h2>My Account</h2>
+        <div class="profile-info" id="profileInfo"></div>
+        <button class="auth-btn" style="background:var(--primary);color:white;margin-bottom:20px;" onclick="showFavorites()">❤️ My Favorites</button>
+    </div>
+    <div class="account-card">
+        <h2>My Posted Ads</h2>
+        <div class="my-ads-grid" id="myAdsContainer">
+            <p style="opacity:0.7;">You haven't posted any ads yet.</p>
+        </div>
+    </div>
+</div>
+
+<div class="favorites-view" id="favoritesView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <h3 style="color:var(--primary);margin-bottom:25px;">My Favorites</h3>
+    <div class="cars-grid" id="favoritesContainer"></div>
+</div>
+
+<div class="compare-view" id="compareView">
+    <button class="back-btn" onclick="showHome()">← Back to Home</button>
+    <h3 style="color:var(--primary);margin-bottom:25px;">Compare Cars</h3>
+    <div id="compareContent"></div>
+</div>
+
+<footer class="main-footer">
+    <div class="footer-top">
+        <div class="footer-col">
+            <h4>Cars By Make</h4>
+            <a href="#">Toyota Cars for Sale</a>
+            <a href="#">Suzuki Cars for Sale</a>
+            <a href="#">Honda Cars for Sale</a>
+            <a href="#">Daihatsu Cars for Sale</a>
+            <a href="#">Mitsubishi Cars for Sale</a>
+            <a href="#">Nissan Cars for Sale</a>
+            <a href="#">Mercedes Cars for Sale</a>
+            <a href="#">Hyundai Cars for Sale</a>
+            <a href="#">BMW Cars for Sale</a>
+        </div>
+        <div class="footer-col">
+            <h4>Cars By City</h4>
+            <a href="#">Cars in Lahore</a>
+            <a href="#">Cars in Karachi</a>
+            <a href="#">Cars in Islamabad</a>
+            <a href="#">Cars in Rawalpindi</a>
+            <a href="#">Cars in Faisalabad</a>
+            <a href="#">Cars in Peshawar</a>
+            <a href="#">Cars in Multan</a>
+            <a href="#">Cars in Gujranwala</a>
+            <a href="#">Cars in Sialkot</a>
+        </div>
+        <div class="footer-col">
+            <h4>Explore AutoRaaz</h4>
+            <a href="#">Used Cars</a>
+            <a href="#">Used Bikes</a>
+            <a href="#">New Cars</a>
+            <a href="#">Auto Parts & Accessories</a>
+            <a href="#">Cool Rides</a>
+            <a href="#">Forums</a>
+            <a href="#">Autoshow</a>
+            <a href="#">Sitemap</a>
+            <a href="#">Glossary</a>
+        </div>
+        <div class="footer-col">
+            <h4>AutoRaaz.com</h4>
+            <a href="#">About AutoRaaz.com</a>
+            <a href="#">Our Products</a>
+            <a href="#">Advertise With Us</a>
+            <a href="#">How To Pay</a>
+            <a href="#">FAQs</a>
+            <a href="#">Refunds & Returns</a>
+            <a href="#">Careers</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="footer-col">
+            <h4>Sell On AutoRaaz</h4>
+            <a href="#" onclick="handlePostAd(); return false;">Sell Your Car</a>
+            <a href="#">Sell Your Bike</a>
+            <a href="#">Sell Accessory</a>
+            <h4 style="margin-top:22px;">Subscribe to our Newsletter</h4>
+            <div class="newsletter" style="display:flex; margin-top:8px;">
+                <input type="email" placeholder="name@email.com">
+                <button>Subscribe</button>
+            </div>
+            <h4 style="margin-top:22px;">Follow Us</h4>
+            <div class="social-icons">
+                <a href="#">𝕏</a><a href="#">f</a><a href="#">P</a><a href="#">📷</a><a href="#">▶</a>
+            </div>
+            <div class="contact-box">
+                <h4>Developer Contact</h4>
+                <p><strong>Hafiz Umair</strong></p>
+                <p>📞 0321-9554332</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer-top" style="margin-top:10px; border-top:1px solid #333; padding-top:30px;">
+        <div class="footer-col">
+            <h4>Cars by Category</h4>
+            <a href="#">Jeep</a><a href="#">Japanese Cars</a><a href="#">Imported Cars</a>
+            <a href="#">Automatic Cars</a><a href="#">Low Priced Cars</a><a href="#">4x4 Cars</a>
+            <a href="#">660cc Cars</a><a href="#">1000cc Cars</a>
+        </div>
+        <div class="footer-col">
+            <h4>Cars by Body Type</h4>
+            <a href="#">Sedan</a><a href="#">Hatchback</a><a href="#">SUV</a>
+            <a href="#">Crossover</a><a href="#">Mini Van</a><a href="#">Compact SUV</a>
+            <a href="#">Compact sedan</a><a href="#">MPV</a>
+        </div>
+        <div class="footer-col">
+            <h4>Cars by Color</h4>
+            <a href="#">White Cars</a><a href="#">Black Cars</a><a href="#">Silver Cars</a>
+            <a href="#">Grey Cars</a><a href="#">Blue Cars</a><a href="#">Red Cars</a>
+            <a href="#">Green Cars</a><a href="#">Maroon Cars</a>
+        </div>
+        <div class="footer-col">
+            <h4>Cars by Province</h4>
+            <a href="#">Cars in Punjab</a><a href="#">Cars in Sindh</a><a href="#">Cars in KPK</a>
+            <a href="#">Cars in Balochistan</a><a href="#">Cars in Azad Kashmir</a>
+            <a href="#">Cars in Federally Administered</a><a href="#">Tribal Areas</a>
+        </div>
+        <div class="footer-col">
+            <h4>Download Mobile Apps</h4>
+            <div style="background:#000; color:white; padding:8px 12px; border-radius:6px; font-size:12px; display:inline-block;">Google Play</div>
+            <div style="background:#000; color:white; padding:8px 12px; border-radius:6px; font-size:12px; display:inline-block; margin-top:6px;">App Store</div>
+            <div style="background:#c00; color:white; padding:8px 12px; border-radius:6px; font-size:12px; display:inline-block; margin-top:6px;">AppGallery</div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        Copyright © 2026 AutoRaaz — Founded & Built by <strong>Hafiz Umair</strong> | 0321-9554332<br>
+        Turning Ideas into Digital Experiences.
+    </div>
+</footer>
+
+<!-- Compare Bar -->
+<div class="compare-bar" id="compareBar">
+    <div class="compare-selected" id="compareSelected"></div>
+    <div class="compare-actions">
+        <button class="btn-compare" onclick="showCompare()">Compare</button>
+        <button class="btn-clear-compare" onclick="clearCompare()">Clear</button>
+    </div>
+</div>
+
+<a href="https://wa.me/923219554332" class="whatsapp-float" target="_blank">💬</a>
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/data.js" defer></script>
+    <script src="js/app.js" defer></script>
+
+</body>
+</html>
